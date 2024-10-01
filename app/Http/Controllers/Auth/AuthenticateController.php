@@ -35,6 +35,15 @@ class AuthenticateController extends Controller
        return back()->withErrors([
             'email' => 'The provided credentials do not match our records.'
        ])->onlyInput('email');
-       
     }
+
+    /**
+     * Destroy
+     */
+    public function destroy(Request $request){
+          Auth::logout();
+          $request->session()->invalidate();
+          $request->session()->regenerate();
+          return redirect('/');
+    }     
 }
