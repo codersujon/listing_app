@@ -4,23 +4,43 @@ import Title from '../../Components/Title.vue'
 import TextLink from '../../Components/TextLink.vue'
 import InputField from '../../Components/InputField.vue'
 import PrimaryBtn from '../../Components/PrimaryBtn.vue'
+import ErrorMessages from '../../Components/ErrorMessage.vue'
+
+import { useForm } from '@inertiajs/vue3'
+
+const form = useForm({
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+});
+
+const RegisterSubmit = () =>{
+    form.post(route('register'), {
+        onFinish: () =>  form.reset("password", "password_confirmation") 
+    })
+}
+
 </script>
 
 <template>
-   <Container class="w-1/2">
+   <Container class="w-1/2 mt-5">
 
         <div class="mb-8 text-center">
             <Title>Register a new account</Title>
             <p>Already have an account? <TextLink routeName="home" label="Login"/></p>
         </div>
 
-        <form class="space-y-6">
-            <InputField  label="Name" icon="id-badge"/>
-            <InputField  label="Email" type="email" icon="at"/>
-            <InputField  label="Password" type="password" icon="key"/>
-            <InputField  label="Confirm Password" type="password" icon="key"/>
+        <!-- Errors Message -->
+        <ErrorMessages :errors="form.errors"/>
+
+        <form class="space-y-6" @submit.prevent="RegisterSubmit()">
+            <InputField  label="Name" icon="id-badge" v-model="form.name"/>
+            <InputField  label="Email" type="email" icon="at" v-model="form.email"/>
+            <InputField  label="Password" type="password" icon="key" v-model="form.password"/>
+            <InputField  label="Confirm Password" type="password" icon="key" v-model="form.password_confirmation"/>
             <p class="text-slate-500 text-sm dark:text-slate-400">By creating an account, you agree to our Terms of Service and Privacy Policy.</p>
-            <PrimaryBtn>Register</PrimaryBtn>
+            <PrimaryBtn :disabled="form.processing">Register</PrimaryBtn>
         </form>
    </Container>
 </template>
