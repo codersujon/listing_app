@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Inertia\Inertia;
@@ -30,6 +31,8 @@ class RegisterController extends Controller
         ]);
 
         $user = User::create($credentials);
+
+        event(new Registered($user));
 
         Auth::login($user);
 
